@@ -1,12 +1,23 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from groq import Groq
+from groq import Groq  # ✅ Import FIRST
 from vector_store import VectorStore
 from duckduckgo_search import DDGS
 
+# Load environment variables
+load_dotenv()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+# Initialize Groq client
+groq_client = Groq(api_key=GROQ_API_KEY)  # ✅ NOW it works!
+
+# Initialize FastAPI
 app = FastAPI(title="AskRGIPT API")
 
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,10 +26,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize vector store
 vector_store = VectorStore()
-
-# YOUR GROQ API KEY
-groq_client = Groq(api_key="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")
 
 class QueryRequest(BaseModel):
     question: str

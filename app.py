@@ -1,16 +1,14 @@
 import subprocess
 import sys
 
-# Install all packages at startup
 packages = [
-    "openai==0.28.1",   # <--- FIXED VERSION
+    "openai==0.28.1",
     "gradio",
     "requests",
     "beautifulsoup4",
     "PyPDF2",
-    "sentence-transformers",
-    "chromadb",
-    "duckduckgo-search"
+    "duckduckgo-search",
+    "flask-cors"  # ← ADD THIS!
 ]
 
 print("Installing packages...")
@@ -19,20 +17,17 @@ for pkg in packages:
 
 import gradio as gr
 import os
-import openai   # <--- using classic client
+import openai
 import requests
 from bs4 import BeautifulSoup
 import PyPDF2
 from duckduckgo_search import DDGS
+from flask_cors import CORS  # ← ADD THIS!
 
-# Load Groq key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-# Configure Groq API endpoint (OpenAI Compatible)
 openai.api_key = GROQ_API_KEY
 openai.api_base = "https://api.groq.com/openai/v1"
 
-# ============ WEB SEARCH ============
 def web_search(query: str):
     try:
         ddgs = DDGS()
@@ -41,29 +36,6 @@ def web_search(query: str):
     except:
         return []
 
-# ============ WEB SCRAPING ============
-def scrape_website(url: str):
-    try:
-        headers = {'User-Agent': 'Mozilla/5.0'}
-        response = requests.get(url, headers=headers, timeout=5)
-        soup = BeautifulSoup(response.content, 'html.parser')
-        return soup.get_text()[:1000]
-    except:
-        return ""
-
-# ============ PDF PROCESSING ============
-def process_pdf(file_path: str):
-    try:
-        with open(file_path, 'rb') as f:
-            reader = PyPDF2.PdfReader(f)
-            text = ""
-            for page in reader.pages[:3]:
-                text += page.extract_text()
-        return text[:500]
-    except:
-        return ""
-
-# ============ MAIN ASK FUNCTION ============
 def ask_rgipt(question: str):
     if not question.strip():
         return "Please ask a question!"
@@ -85,14 +57,18 @@ def ask_rgipt(question: str):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# ============ GRADIO INTERFACE ============
+# ✅ CREATE GRADIO INTERFACE
 demo = gr.Interface(
     fn=ask_rgipt,
     inputs="text",
     outputs="text",
-    title="🎓 AskRGIPT - Full Version",
-    description="Ask anything about RGIPT (with PDF, web scraping, search)"
+    title="🎓 AskRGIPT",
+    description="Ask anything about RGIPT"
 )
 
+# ✅ ENABLE CORS
+if hasattr(demo, 'app'):
+    CORS(demo.app)
+
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    demo.launch(server_name="0.0.0.0", server_port=7860, share=True)

@@ -35,30 +35,27 @@ export default function Chatbot() {
 
     // Save to history
     const newHistory = [...history, { question: userMessage, timestamp: new Date().toISOString() }];
-    setHistory(newHistory.slice(-10)); // Keep last 10
+    setHistory(newHistory.slice(-10));
     localStorage.setItem('askrgipt_history', JSON.stringify(newHistory.slice(-10)));
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/query', {
+      // ✅ FIXED: Connect to HF Spaces backend
+      const response = await fetch('https://akhawattushar-askrgipt.hf.space/run/ask_rgipt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: userMessage })
+        body: JSON.stringify({ data: [userMessage] })
       });
 
+      if (!response.ok) throw new Error('API Error');
       const data = await response.json();
 
-      setMessages(prev => [...prev, {
-        type: 'bot',
-        text: data.answer,
-        sources: data.sources
-      }]);
+      setMessages(prev => [...prev, { type: 'bot', text: data[0] }]);
     } catch (error) {
       setMessages(prev => [...prev, {
         type: 'bot',
         text: '❌ Error: Could not reach API. Make sure backend is running!'
       }]);
     }
-
     setLoading(false);
   };
 
@@ -72,74 +69,96 @@ export default function Chatbot() {
     localStorage.removeItem('askrgipt_history');
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
   return (
-    <div className="chatbot">
-      <div className="header">
-        <div>
+    <div className="chatbot-container">
+      {/* Header */}
+      <div className="chatbot-header">
+        <div className="header-content">
           <h1>🎓 AskRGIPT</h1>
           <p>Your AI Assistant for RGIPT</p>
         </div>
-        <button className="history-btn" onClick={() => setShowHistory(!showHistory)}>
-          📜 History
+        <button
+          className="history-btn"
+          onClick={() => setShowHistory(!showHistory)}
+        >
+          📋 History
         </button>
       </div>
 
+      {/* History Sidebar */}
       {showHistory && (
-        <div className="history-panel">
-          <div className="history-header">
-            <h3>Recent Questions</h3>
-            <button onClick={clearHistory}>Clear</button>
-          </div>
-          {history.length === 0 ? (
-            <p className="empty-history">No history yet</p>
-          ) : (
-            <div className="history-list">
-              {history.slice().reverse().map((item, idx) => (
-                <div key={idx} className="history-item" onClick={() => loadHistoryItem(item.question)}>
-                  <span>🔍</span>
-                  <span>{item.question}</span>
+        <div className="history-sidebar">
+          <h3>Recent Questions</h3>
+          <div className="history-list">
+            {history.length > 0 ? (
+              history.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="history-item"
+                  onClick={() => loadHistoryItem(item.question)}
+                >
+                  <p>{item.question.substring(0, 50)}...</p>
+                  <span className="timestamp">
+                    {new Date(item.timestamp).toLocaleTimeString()}
+                  </span>
                 </div>
-              ))}
-            </div>
-          )}
+              ))
+            ) : (
+              <p className="no-history">No history yet</p>
+            )}
+          </div>
+          <button className="clear-btn" onClick={clearHistory}>
+            Clear History
+          </button>
         </div>
       )}
 
-      <div className="messages">
+      {/* Messages Container */}
+      <div className="messages-container">
         {messages.map((msg, idx) => (
           <div key={idx} className={`message ${msg.type}`}>
-            <div className="text">
+            <div className="message-content">
               <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
-            {msg.sources && (
-              <div className="sources">
-                <small>📄 Sources: {msg.sources.join(', ')}</small>
-              </div>
-            )}
           </div>
         ))}
         {loading && (
           <div className="message bot">
-            <div className="loading-dots">
-              <span></span>
-              <span></span>
-              <span></span>
+            <div className="message-content">
+              <div className="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
             </div>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Input Area */}
       <div className="input-area">
-        <input
-          type="text"
-          placeholder="Ask about admissions, exams, library rules..."
+        <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+          onKeyPress={handleKeyPress}
+          placeholder="Ask about admissions, exams, library rules..."
+          className="input-field"
+          rows="3"
         />
-        <button onClick={sendMessage} disabled={loading}>
-          {loading ? '⏳' : '➤'}
+        <button
+          onClick={sendMessage}
+          disabled={loading || !input.trim()}
+          className="send-btn"
+        >
+          ➤ Send
         </button>
       </div>
     </div>

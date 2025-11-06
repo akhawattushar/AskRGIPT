@@ -8,7 +8,8 @@ packages = [
     "beautifulsoup4",
     "PyPDF2",
     "duckduckgo-search",
-    "flask-cors"  # ← ADD THIS!
+    "sentence-transformers",  # ← ADD BACK
+    "chromadb"                # ← ADD BACK
 ]
 
 print("Installing packages...")
@@ -22,11 +23,17 @@ import requests
 from bs4 import BeautifulSoup
 import PyPDF2
 from duckduckgo_search import DDGS
-from flask_cors import CORS  # ← ADD THIS!
+from sentence_transformers import SentenceTransformer  # ← ADD THIS
+import chromadb  # ← ADD THIS
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 openai.api_key = GROQ_API_KEY
 openai.api_base = "https://api.groq.com/openai/v1"
+
+# ✅ Initialize vector store
+embedder = SentenceTransformer('all-MiniLM-L6-v2')
+client = chromadb.Client()
+collection = client.get_or_create_collection(name="rgipt_docs")
 
 def web_search(query: str):
     try:
@@ -41,8 +48,19 @@ def ask_rgipt(question: str):
         return "Please ask a question!"
     
     try:
+        # Search both web AND vector store
         search_results = web_search(question)
+        
+        # Vector search
+        query_embedding = embedder.encode(question)
+        vector_results = collection.query(
+            query_embeddings=[query_embedding.tolist()],
+            n_results=2
+        )
+        
         context = " ".join(search_results[:2]) if search_results else ""
+        if vector_results and vector_results['documents']:
+            context += " " + " ".join(vector_results['documents'][0])
 
         response = openai.ChatCompletion.create(
             model="llama-3.3-70b-versatile",
@@ -57,7 +75,6 @@ def ask_rgipt(question: str):
     except Exception as e:
         return f"Error: {str(e)}"
 
-# ✅ CREATE GRADIO INTERFACE
 demo = gr.Interface(
     fn=ask_rgipt,
     inputs="text",
@@ -66,9 +83,10 @@ demo = gr.Interface(
     description="Ask anything about RGIPT"
 )
 
-# ✅ ENABLE CORS
-if hasattr(demo, 'app'):
-    CORS(demo.app)
-
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860, share=True)
+    demo.launch(
+        server_name="0.0.0.0",
+        server_port=7860,
+        share=True,
+        allowed_origins=["*"]
+    )

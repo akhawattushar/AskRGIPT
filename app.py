@@ -3,7 +3,7 @@ import sys
 
 # Install all packages at startup
 packages = [
-    "openai==1.35.13",
+    "openai==0.28.1",   # <--- FIXED VERSION
     "gradio",
     "requests",
     "beautifulsoup4",
@@ -19,22 +19,21 @@ for pkg in packages:
 
 import gradio as gr
 import os
-from openai import OpenAI
+import openai   # <--- using classic client
 import requests
 from bs4 import BeautifulSoup
 import PyPDF2
 from duckduckgo_search import DDGS
 
+# Load Groq key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-groq_client = OpenAI(
-    api_key=GROQ_API_KEY,
-    base_url="https://api.groq.com/openai/v1"
-)
+# Configure Groq API endpoint (OpenAI Compatible)
+openai.api_key = GROQ_API_KEY
+openai.api_base = "https://api.groq.com/openai/v1"
 
 # ============ WEB SEARCH ============
 def web_search(query: str):
-    """Search using DuckDuckGo"""
     try:
         ddgs = DDGS()
         results = ddgs.text(f"rgipt {query}", max_results=3)
@@ -44,7 +43,6 @@ def web_search(query: str):
 
 # ============ WEB SCRAPING ============
 def scrape_website(url: str):
-    """Scrape website content"""
     try:
         headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url, headers=headers, timeout=5)
@@ -55,12 +53,11 @@ def scrape_website(url: str):
 
 # ============ PDF PROCESSING ============
 def process_pdf(file_path: str):
-    """Extract text from PDF"""
     try:
         with open(file_path, 'rb') as f:
             reader = PyPDF2.PdfReader(f)
             text = ""
-            for page in reader.pages[:3]:  # First 3 pages
+            for page in reader.pages[:3]:
                 text += page.extract_text()
         return text[:500]
     except:
@@ -68,26 +65,23 @@ def process_pdf(file_path: str):
 
 # ============ MAIN ASK FUNCTION ============
 def ask_rgipt(question: str):
-    """Main function with all features"""
     if not question.strip():
         return "Please ask a question!"
     
     try:
-        # Get context from web search
         search_results = web_search(question)
         context = " ".join(search_results[:2]) if search_results else ""
-        
-        # Call GROQ API
-        response = groq_client.chat.completions.create(
-            messages=[
-                {"role": "system", "content": "You are AskRGIPT, helpful AI for RGIPT"},
-                {"role": "user", "content": f"Context: {context}\n\nQuestion: {question}"}
-            ],
+
+        response = openai.ChatCompletion.create(
             model="llama-3.3-70b-versatile",
             temperature=0.3,
-            max_tokens=500
+            max_tokens=500,
+            messages=[
+                {"role": "system", "content": "You are AskRGIPT, helpful AI for RGIPT."},
+                {"role": "user", "content": f"Context: {context}\n\nQuestion: {question}"}
+            ]
         )
-        return response.choices[0].message.content
+        return response["choices"][0]["message"]["content"].strip()
     except Exception as e:
         return f"Error: {str(e)}"
 
@@ -97,7 +91,7 @@ demo = gr.Interface(
     inputs="text",
     outputs="text",
     title="🎓 AskRGIPT - Full Version",
-    description="Ask anything about RGIPT (with PyPDF2, web scraping, search)"
+    description="Ask anything about RGIPT (with PDF, web scraping, search)"
 )
 
 if __name__ == "__main__":

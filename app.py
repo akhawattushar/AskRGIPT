@@ -64,10 +64,9 @@ demo = gr.Interface(
 )
 
 if __name__ == "__main__":
-    # ✅ CORRECT: Use Gradio's built-in CORS
+    # ✅ CORRECT: NO allowed_origins parameter!
     demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
-        share=True,
-        allowed_origins=["*"]  # ← This ENABLES CORS for all origins!
+        share=True
     )

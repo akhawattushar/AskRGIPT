@@ -7,9 +7,7 @@ packages = [
     "requests",
     "beautifulsoup4",
     "PyPDF2",
-    "duckduckgo-search",
-    "sentence-transformers",  # ← ADD BACK
-    "chromadb"                # ← ADD BACK
+    "duckduckgo-search"
 ]
 
 print("Installing packages...")
@@ -23,17 +21,10 @@ import requests
 from bs4 import BeautifulSoup
 import PyPDF2
 from duckduckgo_search import DDGS
-from sentence_transformers import SentenceTransformer  # ← ADD THIS
-import chromadb  # ← ADD THIS
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 openai.api_key = GROQ_API_KEY
 openai.api_base = "https://api.groq.com/openai/v1"
-
-# ✅ Initialize vector store
-embedder = SentenceTransformer('all-MiniLM-L6-v2')
-client = chromadb.Client()
-collection = client.get_or_create_collection(name="rgipt_docs")
 
 def web_search(query: str):
     try:
@@ -48,19 +39,8 @@ def ask_rgipt(question: str):
         return "Please ask a question!"
     
     try:
-        # Search both web AND vector store
         search_results = web_search(question)
-        
-        # Vector search
-        query_embedding = embedder.encode(question)
-        vector_results = collection.query(
-            query_embeddings=[query_embedding.tolist()],
-            n_results=2
-        )
-        
         context = " ".join(search_results[:2]) if search_results else ""
-        if vector_results and vector_results['documents']:
-            context += " " + " ".join(vector_results['documents'][0])
 
         response = openai.ChatCompletion.create(
             model="llama-3.3-70b-versatile",
@@ -84,9 +64,10 @@ demo = gr.Interface(
 )
 
 if __name__ == "__main__":
+    # ✅ CORRECT: Use Gradio's built-in CORS
     demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
         share=True,
-        allowed_origins=["*"]
+        allowed_origins=["*"]  # ← This ENABLES CORS for all origins!
     )

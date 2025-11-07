@@ -19,7 +19,7 @@ const Chatbot = () => {
     setInput("");
 
     try {
-      const response = await fetch("https://your-backend-api/rgipt-chatbot", {
+      const response = await fetch("https://huggingface.co/spaces/akhawattushar/askrgipt", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

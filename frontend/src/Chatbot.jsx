@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import './Chatbot.css';
+import { Client } from "@gradio/client";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([
@@ -12,12 +13,10 @@ export default function Chatbot() {
   const [history, setHistory] = useState([]);
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Load history from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('askrgipt_history');
     if (saved) {
@@ -33,30 +32,22 @@ export default function Chatbot() {
     setInput('');
     setLoading(true);
 
-    // Save to history
     const newHistory = [...history, { question: userMessage, timestamp: new Date().toISOString() }];
-    setHistory(newHistory.slice(-10)); // Keep last 10
+    setHistory(newHistory.slice(-10));
     localStorage.setItem('askrgipt_history', JSON.stringify(newHistory.slice(-10)));
 
     try {
-      const response = await fetch('https://akhawattushar-askrgipt.hf.space/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ data: [userMessage] })
+      const client = await Client.connect("akhawattushar/askrgipt");
+      const result = await client.predict("/predict", { 
+        question: userMessage 
       });
-
-      if (!response.ok) {
-        throw new Error('Backend response error');
-      }
-
-      const data = await response.json();
+      
       setMessages(prev => [...prev, {
         type: 'bot',
-        text: data.data[0] || 'Sorry, I didn\'t get that. Could you rephrase?'
+        text: result.data || 'Sorry, I didn\'t get that. Could you rephrase?'
       }]);
     } catch (error) {
+      console.error('Error:', error);
       setMessages(prev => [...prev, {
         type: 'bot',
         text: '❌ Error: Could not connect to backend. Please try again later!'
@@ -115,11 +106,6 @@ export default function Chatbot() {
             <div className="text">
               <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
-            {msg.sources && (
-              <div className="sources">
-                Sources: {msg.sources.join(', ')}
-              </div>
-            )}
           </div>
         ))}
         {loading && (

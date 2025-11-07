@@ -39,7 +39,7 @@ export default function Chatbot() {
     localStorage.setItem('askrgipt_history', JSON.stringify(newHistory.slice(-10)));
 
     try {
-      const response = await fetch('https://akhawattushar-askrgipt.hf.space/api/predict', {
+      const response = await fetch('https://akhawattushar-askrgipt.hf.space/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

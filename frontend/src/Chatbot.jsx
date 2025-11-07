@@ -1,166 +1,86 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import './Chatbot.css';
+import React, { useState, useEffect, useRef } from "react";
+import "./Chatbot.css";
 
-export default function Chatbot() {
+const Chatbot = () => {
   const [messages, setMessages] = useState([
-    { type: 'bot', text: 'Hi! 👋 I\'m **AskRGIPT**. Ask me anything about RGIPT!' }
+    { from: "bot", text: "Hello! How can I assist you with RGIPT today?" },
   ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-  const [history, setHistory] = useState([]);
+  const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  // Load history from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('askrgipt_history');
-    if (saved) {
-      setHistory(JSON.parse(saved));
-    }
-  }, []);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
-    const userMessage = input;
-    setMessages([...messages, { type: 'user', text: userMessage }]);
-    setInput('');
-    setLoading(true);
-
-    // Save to history
-    const newHistory = [...history, { question: userMessage, timestamp: new Date().toISOString() }];
-    setHistory(newHistory.slice(-10));
-    localStorage.setItem('askrgipt_history', JSON.stringify(newHistory.slice(-10)));
+    const userMessage = { from: "user", text: input.trim() };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
 
     try {
-      // ✅ FIXED: Connect to HF Spaces backend
-      const response = await fetch('https://akhawattushar-askrgipt.hf.space/run/ask_rgipt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: [userMessage] })
+      const response = await fetch("https://your-backend-api/rgipt-chatbot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: userMessage.text }),
       });
 
-      if (!response.ok) throw new Error('API Error');
+      if (!response.ok) {
+        throw new Error("Backend response error");
+      }
+
       const data = await response.json();
-
-      setMessages(prev => [...prev, { type: 'bot', text: data[0] }]);
+      const botMessage = {
+        from: "bot",
+        text: data.reply || "Sorry, I didn't get that. Could you rephrase?",
+      };
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      setMessages(prev => [...prev, {
-        type: 'bot',
-        text: '❌ Error: Could not reach API. Make sure backend is running!'
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        { from: "bot", text: "Error connecting to backend. Please try again later." },
+      ]);
     }
-    setLoading(false);
   };
 
-  const loadHistoryItem = (question) => {
-    setInput(question);
-    setShowHistory(false);
-  };
-
-  const clearHistory = () => {
-    setHistory([]);
-    localStorage.removeItem('askrgipt_history');
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
       e.preventDefault();
       sendMessage();
     }
   };
 
   return (
-    <div className="chatbot-container">
-      {/* Header */}
-      <div className="chatbot-header">
-        <div className="header-content">
-          <h1>🎓 AskRGIPT</h1>
-          <p>Your AI Assistant for RGIPT</p>
-        </div>
-        <button
-          className="history-btn"
-          onClick={() => setShowHistory(!showHistory)}
-        >
-          📋 History
-        </button>
-      </div>
-
-      {/* History Sidebar */}
-      {showHistory && (
-        <div className="history-sidebar">
-          <h3>Recent Questions</h3>
-          <div className="history-list">
-            {history.length > 0 ? (
-              history.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="history-item"
-                  onClick={() => loadHistoryItem(item.question)}
-                >
-                  <p>{item.question.substring(0, 50)}...</p>
-                  <span className="timestamp">
-                    {new Date(item.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <p className="no-history">No history yet</p>
-            )}
-          </div>
-          <button className="clear-btn" onClick={clearHistory}>
-            Clear History
-          </button>
-        </div>
-      )}
-
-      {/* Messages Container */}
-      <div className="messages-container">
+    <div className="chatbot">
+      <div className="header">RGIPT Chatbot</div>
+      <div className="messages">
         {messages.map((msg, idx) => (
-          <div key={idx} className={`message ${msg.type}`}>
-            <div className="message-content">
-              <ReactMarkdown>{msg.text}</ReactMarkdown>
-            </div>
+          <div
+            key={idx}
+            className={`message ${msg.from === "bot" ? "bot-message" : "user-message"}`}
+          >
+            {msg.text}
           </div>
         ))}
-        {loading && (
-          <div className="message bot">
-            <div className="message-content">
-              <div className="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </div>
-          </div>
-        )}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Input Area */}
       <div className="input-area">
         <textarea
+          className="input-text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          placeholder="Ask about admissions, exams, library rules..."
-          className="input-field"
-          rows="3"
+          onKeyDown={handleKeyDown}
+          placeholder="Type your message here..."
+          rows={2}
         />
-        <button
-          onClick={sendMessage}
-          disabled={loading || !input.trim()}
-          className="send-btn"
-        >
-          ➤ Send
+        <button className="send-button" onClick={sendMessage}>
+          Send
         </button>
       </div>
     </div>
   );
-}
+};
+
+export default Chatbot;

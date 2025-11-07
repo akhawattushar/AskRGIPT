@@ -19,7 +19,7 @@ const Chatbot = () => {
     setInput("");
 
     try {
-      const response = await fetch("https://huggingface.co/spaces/akhawattushar/askrgipt", {
+      const response = await fetch("https://akhawattushar-askrgipt.hf.space/api/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

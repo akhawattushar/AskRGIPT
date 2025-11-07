@@ -3,18 +3,9 @@ import { Client } from "@gradio/client";
 import ReactMarkdown from "react-markdown";
 import "./Chatbot.css";
 
-/*
-  Notes:
-  - This file preserves history, timestamps, loading UI, scroll, and error handling.
-  - To switch backend source, edit GRADIO_CONNECT_MODE below.
-    - "space" uses Client.connect("username/project")
-    - "url" uses Client.connect("https://host:port") (useful for local/Codespaces forwarded ports)
-*/
-
-const GRADIO_CONNECT_MODE = "auto"; // "auto" | "space" | "url"
-const GRADIO_SPACE_NAME = "akhawattushar/askrgipt"; // change to your space if needed
-// If you want to force a URL (local or forwarded), set it here (example: https://your-codespace-7860.app.github.dev)
-const GRADIO_URL = ""; // example: "http://127.0.0.1:7860" or "https://friendly-fishstick-7860.app.github.dev"
+const GRADIO_CONNECT_MODE = "auto";
+const GRADIO_SPACE_NAME = "akhawattushar/askrgipt";
+const GRADIO_URL = "";
 
 export default function Chatbot() {
   const [messages, setMessages] = useState([
@@ -31,12 +22,10 @@ export default function Chatbot() {
   const [history, setHistory] = useState([]);
   const messagesEndRef = useRef(null);
 
-  // scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // load saved history from localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem("askrgipt_history");
@@ -46,7 +35,6 @@ export default function Chatbot() {
     }
   }, []);
 
-  // helper to persist history (keep last 20)
   const persistHistory = (arr) => {
     const clipped = arr.slice(-20);
     setHistory(clipped);
@@ -57,7 +45,6 @@ export default function Chatbot() {
     }
   };
 
-  // build the client connection depending on chosen mode
   const connectClient = async () => {
     if (GRADIO_CONNECT_MODE === "space") {
       return await Client.connect(GRADIO_SPACE_NAME);
@@ -65,7 +52,6 @@ export default function Chatbot() {
       if (!GRADIO_URL) throw new Error("GRADIO_URL is empty.");
       return await Client.connect(GRADIO_URL);
     } else {
-      // auto: try space first, fallback to URL if provided
       try {
         return await Client.connect(GRADIO_SPACE_NAME);
       } catch (e) {
@@ -75,7 +61,6 @@ export default function Chatbot() {
     }
   };
 
-  // send message to backend and update UI
   const sendMessage = async () => {
     if (!input.trim()) return;
     const userMessage = input.trim();
@@ -90,24 +75,21 @@ export default function Chatbot() {
     setInput("");
     setLoading(true);
 
-    // update and persist history
-    const newHistory = [...history, { question: userMessage, ts: new Date().toISOString() }];
+    const newHistory = [
+      ...history,
+      { question: userMessage, ts: new Date().toISOString() },
+    ];
     persistHistory(newHistory);
 
     try {
       const client = await connectClient();
-
-      // Gradio interface defined with single text input: send it appropriately.
-      // We use named payload first; fallback to list if the server expects that.
       let result;
       try {
         result = await client.predict("/predict", { question: userMessage });
       } catch (err) {
-        // some Gradio setups expect array form: data: [userMessage]
         result = await client.predict("/predict", [userMessage]);
       }
 
-      // result.data can be string or array. Normalize:
       let botReply = "";
       if (!result) {
         botReply = "No response from server.";
@@ -118,14 +100,24 @@ export default function Chatbot() {
       } else if (result.data && result.data.output_text) {
         botReply = result.data.output_text;
       } else {
-        botReply = JSON.stringify(result.data).slice(0, 1000);
+        botReply = JSON.stringify(result.data).slice(0, 2000);
       }
 
-      const botEntry = { id: Date.now() + Math.random(), type: "bot", text: botReply, ts: new Date().toISOString() };
+      const botEntry = {
+        id: Date.now() + Math.random(),
+        type: "bot",
+        text: botReply,
+        ts: new Date().toISOString(),
+      };
       setMessages((prev) => [...prev, botEntry]);
     } catch (e) {
       console.error("Send error:", e);
-      const errEntry = { id: Date.now() + Math.random(), type: "bot", text: "❌ Error: Could not connect to backend. Check console.", ts: new Date().toISOString() };
+      const errEntry = {
+        id: Date.now() + Math.random(),
+        type: "bot",
+        text: "❌ Error: Could not connect to backend. Check console.",
+        ts: new Date().toISOString(),
+      };
       setMessages((prev) => [...prev, errEntry]);
     } finally {
       setLoading(false);
@@ -144,11 +136,10 @@ export default function Chatbot() {
     } catch (e) {}
   };
 
-  // helper to render a message item
   const renderMessage = (msg) => {
     return (
       <div className={`message ${msg.type}`} key={msg.id}>
-        <div className="message-body">
+        <div className="text">
           <ReactMarkdown>{msg.text}</ReactMarkdown>
         </div>
         <div className="message-meta">{new Date(msg.ts).toLocaleTimeString()}</div>
@@ -159,12 +150,21 @@ export default function Chatbot() {
   return (
     <div className="chatbot">
       <div className="header">
-        <div>
-          <h1>RGIPT Chatbot</h1>
+        {/* MODIFIED HEADER START */}
+        <div className="title-area">
+          {/* Using an emoji as a placeholder for the logo */}
+          <span className="app-logo">🎓</span> 
+          <h1>AskRGIPT</h1> {/* Changed title */}
           <p>Your AI Assistant for RGIPT</p>
         </div>
+        {/* MODIFIED HEADER END */}
         <div>
-          <button className="history-btn" onClick={() => setShowHistory(!showHistory)}>📜 History</button>
+          <button
+            className="history-btn"
+            onClick={() => setShowHistory(!showHistory)}
+          >
+            📜 History
+          </button>
         </div>
       </div>
 
@@ -173,19 +173,34 @@ export default function Chatbot() {
           <div className="history-header">
             <h3>Recent Questions</h3>
             <div>
-              <button onClick={() => { navigator.clipboard?.writeText(JSON.stringify(history.slice(-10))); }}>Copy</button>
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(JSON.stringify(history.slice(-10)));
+                }}
+              >
+                Copy
+              </button>
               <button onClick={clearHistory}>Clear</button>
             </div>
           </div>
           {history.length === 0 ? (
             <p className="empty-history">No history yet</p>
           ) : (
-            history.slice().reverse().map((h, idx) => (
-              <div key={idx} className="history-item" onClick={() => loadHistoryItem(h.question)}>
-                <div className="history-q">💬 {h.question}</div>
-                <div className="history-ts">{new Date(h.ts).toLocaleString()}</div>
-              </div>
-            ))
+            history
+              .slice()
+              .reverse()
+              .map((h, idx) => (
+                <div
+                  key={idx}
+                  className="history-item"
+                  onClick={() => loadHistoryItem(h.question)}
+                >
+                  <div>💬 {h.question}</div>
+                  <div className="history-ts">
+                    {new Date(h.ts).toLocaleString()}
+                  </div>
+                </div>
+              ))
           )}
         </div>
       )}
@@ -194,7 +209,9 @@ export default function Chatbot() {
         {messages.map(renderMessage)}
         {loading && (
           <div className="message bot loading">
-            <div className="message-body">Thinking<span className="dots">...</span></div>
+            <div className="text">
+              Thinking<span className="loading-dots"><span></span><span></span><span></span></span>
+            </div>
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -205,11 +222,15 @@ export default function Chatbot() {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") sendMessage(); }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") sendMessage();
+          }}
           placeholder="Ask about admissions, exams, library rules..."
           aria-label="Message input"
         />
-        <button onClick={sendMessage} disabled={loading}>Send</button>
+        <button onClick={sendMessage} disabled={loading}>
+          Send
+        </button>
       </div>
     </div>
   );

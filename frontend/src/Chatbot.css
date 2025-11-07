@@ -1,282 +1,447 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 .chatbot {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  color: white;
-  padding: 20px 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 20px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
-.header > div h1 {
-  font-size: 2.5em;
-  margin: 0 0 5px 0;
+/* --- NEW STYLES FOR LOGO AND TITLE AREA --- */
+
+.header .title-area {
+    display: flex;
+    /* Vertically center the elements inside the title area */
+    align-items: center; 
+    /* Allows the p tag (subtitle) to move below the h1 */
+    flex-wrap: wrap; 
 }
 
-.header > div p {
-  font-size: 0.9em;
-  opacity: 0.9;
-  margin: 0;
+.header .title-area .app-logo {
+    /* Large size for the logo/emoji */
+    font-size: 2.5em; 
+    margin-right: 15px;
+    /* Maintain vertical alignment with the text */
+    line-height: 1; 
 }
+
+.header .title-area h1 {
+    /* Adjusted size for the main title */
+    font-size: 1.8em; 
+    margin: 0;
+    /* Resetting previous general header h1 rules */
+}
+
+.header .title-area p {
+    /* Positioning the subtitle below the h1, matching the screenshot layout */
+    font-size: 0.9em;
+    opacity: 0.9;
+    margin: 0;
+    width: 100%; /* Forces the subtitle to wrap to the next line */
+    padding-left: calc(2.5em + 15px); /* Aligns the subtitle text under the h1, next to the logo's width + margin */
+}
+
+/* --- END NEW STYLES --- */
+
 
 .history-btn {
-  padding: 10px 20px;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 0.9em;
-  font-weight: 600;
-  transition: all 0.3s;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s;
 }
 
 .history-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .history-panel {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  padding: 20px;
-  margin: 15px 25px;
-  border-radius: 15px;
-  max-height: 250px;
-  overflow-y: auto;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    margin: 15px 25px;
+    border-radius: 15px;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .history-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .history-header h3 {
-  color: white;
-  font-size: 1.1em;
-  margin: 0;
+    color: white;
+    font-size: 1.1em;
+    margin: 0;
 }
 
 .history-header button {
-  padding: 6px 15px;
-  background: #ff4444;
-  color: white;
-  border: none;
-  border-radius: 15px;
-  cursor: pointer;
-  font-size: 0.85em;
-  font-weight: 600;
-  transition: 0.3s;
+    padding: 6px 15px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 600;
+    transition: 0.3s;
 }
 
 .history-header button:hover {
-  background: #cc0000;
-  transform: scale(1.05);
+    background: #cc0000;
+    transform: scale(1.05);
 }
 
 .empty-history {
-  color: rgba(255, 255, 255, 0.7);
-  text-align: center;
-  font-style: italic;
-  padding: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+    font-style: italic;
+    padding: 20px;
 }
 
 .history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .history-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 15px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
 
 .history-item:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
 }
 
 .history-item span:first-child {
-  font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 .history-item span:last-child {
-  color: white;
-  font-size: 0.9em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
+    color: white;
+    font-size: 0.9em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
 }
 
 .messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
 .messages::-webkit-scrollbar {
-  width: 8px;
+    width: 8px;
 }
 
 .messages::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
 }
 
 .messages::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
 }
 
 .message {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 70%;
-  word-wrap: break-word;
-  animation: slideIn 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 70%;
+    word-wrap: break-word;
+    animation: slideIn 0.3s ease-out;
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .message.user {
-  align-self: flex-end;
+    align-self: flex-end;
 }
 
 .message.user .text {
-  background: #007bff;
-  color: white;
-  padding: 14px 18px;
-  border-radius: 18px 18px 0 18px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: #007bff;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 18px 18px 0 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .message.bot {
-  align-self: flex-start;
+    align-self: flex-start;
 }
 
 .message.bot .text {
-  background: white;
-  color: #333;
-  padding: 14px 18px;
-  border-radius: 18px 18px 18px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  white-space: pre-wrap;
-  line-height: 1.6;
+    background: white;
+    color: #333;
+    padding: 14px 18px;
+    border-radius: 18px 18px 18px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    white-space: pre-wrap;
+    line-height: 1.6;
 }
 
-.sources {
-  padding: 0 18px;
-  font-size: 0.8em;
-  color: #fff;
-  opacity: 0.85;
+.message-meta {
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .loading-dots {
-  display: flex;
-  gap: 8px;
-  padding: 12px;
+    display: flex;
+    gap: 8px;
+    padding: 12px;
 }
 
 .loading-dots span {
-  width: 10px;
-  height: 10px;
-  background: #667eea;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out both;
+    width: 10px;
+    height: 10px;
+    background: #667eea;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out both;
 }
 
 .loading-dots span:nth-child(1) {
-  animation-delay: -0.32s;
+    animation-delay: -0.32s;
 }
 
 .loading-dots span:nth-child(2) {
-  animation-delay: -0.16s;
+    animation-delay: -0.16s;
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(1);
-  }
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1);
+    }
 }
 
 .input-area {
-  display: flex;
-  gap: 12px;
-  padding: 25px;
-  background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 12px;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .input-area input {
-  flex: 1;
-  padding: 14px 20px;
-  border: none;
-  border-radius: 25px;
-  font-size: 1em;
-  outline: none;
-  transition: 0.3s;
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1em;
+    outline: none;
+    transition: 0.3s;
 }
 
 .input-area input:focus {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .input-area button {
-  padding: 14px 30px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 1.1em;
-  transition: 0.3s;
+    padding: 14px 30px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: 0.3s;
 }
 
 .input-area button:hover:not(:disabled) {
-  background: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
 }
 
 .input-area button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+    opacity: 0.6;
+    cursor: not-allowed;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .message {
+        max-width: 90%;
+    }
+
+    /* Adjusted for new title area structure */
+    .header .title-area h1 {
+        font-size: 1.5em; 
+    }
+    .header .title-area .app-logo {
+        font-size: 2em;
+    }
+    .header .title-area p {
+        padding-left: calc(2em + 15px);
+    }
+
+    .input-area {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chatbot {
+        height: 100dvh;
+    }
+
+    .header {
+        padding: 12px;
+        /* Revert to row on mobile, keeping space-between */
+        flex-direction: row; 
+        gap: 10px;
+    }
+
+    .header .title-area {
+        /* Allow the title and logo to shrink */
+        flex-basis: 70%;
+    }
+
+    .header .title-area h1 {
+        font-size: 1.3em; 
+    }
+
+    .header .title-area .app-logo {
+        font-size: 1.8em; 
+    }
+
+    /* Reset subtitle alignment for very small screens if necessary, or keep the offset */
+    .header .title-area p {
+        padding-left: calc(1.8em + 15px);
+    }
+
+    .message {
+        max-width: 95%;
+    }
+
+    .messages {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .input-area {
+        padding: 10px;
+        gap: 8px;
+    }
+}
+
+/* Markdown Highlighting & Formatting */
+.text code {
+    background: #f5f5f5;
+    color: #d63384;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+}
+
+.text pre {
+    background: #1e1e1e;
+    color: #e1e1e1;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 10px 0;
+}
+
+.text pre code {
+    background: none;
+    color: #e1e1e1;
+    padding: 0;
+}
+
+.text h1, .text h2, .text h3 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.text h1 { color: #007bff; font-size: 1.3em; }
+.text h2 { color: #0056b3; font-size: 1.15em; }
+.text h3 { color: #004085; font-size: 1em; }
+
+.text strong { color: #ff6b6b; font-weight: 700; }
+.text em { color: #20c997; font-style: italic; }
+
+.text ul, .text ol {
+    margin-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.text li {
+    margin-bottom: 5px;
+    line-height: 1.6;
+}
+
+.text blockquote {
+    border-left: 4px solid #007bff;
+    padding-left: 10px;
+    margin-left: 10px;
+    color: #666;
+    font-style: italic;
+    background: #f8f9fa;
+    border-radius: 3px;
+    padding: 10px;
+}
+
+/* Syntax Highlighting */
+.hljs {
+    background: #1e1e1e !important;
+    color: #d4d4d4 !important;
+    border-radius: 5px;
+}
+
+.hljs-string { color: #ce9178 !important; }
+.hljs-number { color: #b5cea8 !important; }
+.hljs-literal { color: #569cd6 !important; }
+.hljs-attr { color: #9cdcfe !important; }
+.hljs-title { color: #4ec9b0 !important; }
+.hljs-function { color: #dcdcdc !important; }
+.hljs-params { color: #9cdcfe !important; }

@@ -7,6 +7,16 @@ const GRADIO_CONNECT_MODE = "auto";
 const GRADIO_SPACE_NAME = "akhawattushar/askrgipt";
 const GRADIO_URL = "";
 
+const examples = [
+  "How many students per hostel room at RGIPT?",
+  "What's the fee structure for BTech at RGIPT?",
+  "What are the library hours at RGIPT?",
+  "Tell me about RGIPT placement statistics",
+  "Which branches are available at RGIPT?",
+  "How to get admission in RGIPT?",
+  "What is the campus location of RGIPT?"
+];
+
 export default function Chatbot() {
   const [messages, setMessages] = useState([
     {
@@ -124,6 +134,22 @@ export default function Chatbot() {
     }
   };
 
+  const handleExampleClick = (example) => {
+    setInput(example);
+  };
+
+  const clearChat = () => {
+    setMessages([
+      {
+        id: Date.now(),
+        type: "bot",
+        text: "Hi! 👋 I'm **AskRGIPT**. Ask me anything about RGIPT!",
+        ts: new Date().toISOString(),
+      },
+    ]);
+    setInput("");
+  };
+
   const loadHistoryItem = (question) => {
     setInput(question);
     setShowHistory(false);
@@ -150,14 +176,11 @@ export default function Chatbot() {
   return (
     <div className="chatbot">
       <div className="header">
-        {/* MODIFIED HEADER START */}
         <div className="title-area">
-          {/* Using an emoji as a placeholder for the logo */}
           <span className="app-logo">🎓</span> 
-          <h1>AskRGIPT</h1> {/* Changed title */}
+          <h1>AskRGIPT</h1> 
           <p>Your AI Assistant for RGIPT</p>
         </div>
-        {/* MODIFIED HEADER END */}
         <div>
           <button
             className="history-btn"
@@ -205,6 +228,30 @@ export default function Chatbot() {
         </div>
       )}
 
+      {/* EXAMPLES SECTION */}
+      <div className="examples" style={{ padding: "8px", borderTop: "1px solid #ddd" }}>
+        <strong>Examples:</strong>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "4px" }}>
+          {examples.map((ex, i) => (
+            <button
+              key={i}
+              style={{
+                backgroundColor: "#7c3aed",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "0.9rem"
+              }}
+              onClick={() => handleExampleClick(ex)}
+            >
+              {ex}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="messages" role="log" aria-live="polite">
         {messages.map(renderMessage)}
         {loading && (
@@ -230,6 +277,9 @@ export default function Chatbot() {
         />
         <button onClick={sendMessage} disabled={loading}>
           Send
+        </button>
+        <button onClick={clearChat} style={{ marginLeft: 8 }}>
+          Clear Chat
         </button>
       </div>
     </div>

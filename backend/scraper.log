@@ -1,0 +1,17 @@
+2025-11-03 17:53:32,743 - scrapers.rgipt_scraper_enhanced - INFO - ============================================================
+2025-11-03 17:53:32,744 - scrapers.rgipt_scraper_enhanced - INFO - 🕷️  RGIPT Enhanced Scraper
+2025-11-03 17:53:32,744 - scrapers.rgipt_scraper_enhanced - INFO -    Started: 2025-11-03 17:53:32
+2025-11-03 17:53:32,744 - scrapers.rgipt_scraper_enhanced - INFO - ============================================================
+2025-11-03 17:53:32,746 - scrapers.rgipt_scraper_enhanced - INFO - Found 4 target URLs to scrape
+2025-11-03 17:53:32,746 - scrapers.rgipt_scraper_enhanced - INFO - Scraping URL: https://www.rgipt.ac.in/en/page/institute-policies (category: policies)
+2025-11-03 17:53:33,748 - scrapers.rgipt_scraper_enhanced - INFO - Found 0 PDF links from https://www.rgipt.ac.in/en/page/institute-policies
+2025-11-03 17:53:33,749 - scrapers.rgipt_scraper_enhanced - INFO - Scraping URL: https://www.rgipt.ac.in/en/page/rules-regulations (category: policies)
+2025-11-03 17:53:34,751 - scrapers.rgipt_scraper_enhanced - INFO - Found 0 PDF links from https://www.rgipt.ac.in/en/page/rules-regulations
+2025-11-03 17:53:34,752 - scrapers.rgipt_scraper_enhanced - INFO - Scraping URL: https://www.rgipt.ac.in/en/page/semester-fee-structure (category: pdfs)
+2025-11-03 17:53:35,753 - scrapers.rgipt_scraper_enhanced - INFO - Found 0 PDF links from https://www.rgipt.ac.in/en/page/semester-fee-structure
+2025-11-03 17:53:35,754 - scrapers.rgipt_scraper_enhanced - INFO - Scraping URL: https://www.rgipt.ac.in/en/article/notifications (category: notices)
+2025-11-03 17:53:36,756 - scrapers.rgipt_scraper_enhanced - INFO - Found 0 PDF links from https://www.rgipt.ac.in/en/article/notifications
+2025-11-03 17:53:38,901 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cuda:0
+2025-11-03 17:53:38,902 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2
+2025-11-03 17:53:46,133 - sentence_transformers.cross_encoder.CrossEncoder - INFO - Use pytorch device: cuda:0
+2025-11-03 17:53:47,301 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-MiniLM-L6-v2

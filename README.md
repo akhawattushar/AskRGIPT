@@ -101,9 +101,93 @@ System flow:
 
 ---
 
-## Next Steps / Contribution
-- Want this added to the repository as README.md? I can create/update the file for you.
-- Suggestions welcome: desired LLM provider, preferred vector DB, or example documents to include.
-- To contribute: fork the repo, implement ingestion or retrieval modules, add unit tests, and open a PR.
+## Implementation Status
+
+### ✅ Completed Features
+
+1. **Enhanced Document Scraper** (`backend/scrapers/rgipt_scraper_enhanced.py`)
+   - Configuration-based scraping with JSON config
+   - Support for direct PDF links and pages containing PDFs
+   - Selenium integration for dynamic content
+   - Metadata tracking and category classification
+
+2. **OCR Support** (`backend/ocr/`)
+   - PaddleOCR and Tesseract OCR integration
+   - Image preprocessing (deskew, denoise, enhance contrast)
+   - Automatic detection of scanned vs text-based PDFs
+
+3. **Enhanced Document Processor** (`backend/document_processor.py`)
+   - Support for PDF, DOCX, HTML, TXT files
+   - Semantic chunking with langchain
+   - OCR integration for scanned documents
+   - Metadata preservation (source, page, category, OCR confidence)
+
+4. **Enhanced Vector Store** (`backend/vector_store.py`)
+   - ChromaDB with sentence-transformers
+   - Hybrid search (semantic + keyword)
+   - Re-ranking with cross-encoder models
+   - Metadata filtering
+
+5. **RAG Engine** (`backend/rag_engine.py`)
+   - LLM integration (OpenAI GPT-3.5/4)
+   - Citation extraction and formatting
+   - Hallucination prevention
+   - Context-limited responses
+
+6. **Function Calling System** (`backend/function_calling.py`)
+   - Structured query handlers (policies, fees, calendar)
+   - Policy summarization
+   - Policy comparison
+
+7. **Query Router** (`backend/query_router.py`)
+   - Intent classification
+   - Automatic routing to functions or general RAG
+   - Parameter extraction from natural language
+
+8. **FastAPI Backend** (`backend/api/`)
+   - RESTful API endpoints
+   - WebSocket support for real-time chat
+   - Streaming responses
+   - Request/response validation
+
+9. **Web Frontend** (`frontend/`)
+   - Modern chat interface
+   - Citation display
+   - Function call indicators
+   - Responsive design
+
+### 🚧 Optional Features (Not Yet Implemented)
+
+- Fine-tuning pipeline for RGIPT-specific model training
+- Comprehensive test suite and evaluation framework
+- Advanced monitoring and logging
+- Docker Compose deployment configuration
+
+## Quick Start
+
+See [SETUP.md](SETUP.md) for detailed setup instructions.
+
+### Basic Setup
+
+1. Install dependencies: `pip install -r backend/requirements.txt`
+2. Configure `.env` with your OpenAI API key
+3. Add PDF links to `scraper_config.json`
+4. Run scraper: `python backend/scrapers/rgipt_scraper_enhanced.py`
+5. Index documents: `python backend/indexing_pipeline.py`
+6. Start API: `python backend/api/main.py`
+7. Open `frontend/index.html` in browser
+
+## API Documentation
+
+Once the API is running, visit `http://localhost:8000/docs` for interactive API documentation.
+
+## Contribution
+
+To contribute:
+1. Fork the repository
+2. Create a feature branch
+3. Implement your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ---

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Compass - RGIPT AI Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ Campus Compass</h1>
+            <p class="subtitle">Your AI Oracle for RGIPT</p>
+        </header>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <p>Hello! I'm Campus Compass, your AI assistant for RGIPT. I can help you find information about policies, fees, academic calendar, and more. Ask me anything!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text" id="messageInput" placeholder="Ask about policies, fees, calendar, etc..." autocomplete="off">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+
+        <div class="citations-panel" id="citationsPanel" style="display: none;">
+            <h3>📚 Sources</h3>
+            <div id="citationsList"></div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
+

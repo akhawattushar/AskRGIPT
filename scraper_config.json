@@ -1,0 +1,49 @@
+{
+  "target_urls": [
+    {
+      "url": "https://www.rgipt.ac.in/en/page/institute-policies",
+      "category": "policies",
+      "description": "Institute Policies",
+      "use_selenium": true
+    },
+    {
+      "url": "https://www.rgipt.ac.in/en/page/rules-regulations",
+      "category": "policies",
+      "description": "Rules and Regulations",
+      "use_selenium": true
+    },
+    {
+      "url": "https://www.rgipt.ac.in/en/page/semester-fee-structure",
+      "category": "pdfs",
+      "description": "Fee Structure",
+      "use_selenium": true
+    },
+    {
+      "url": "https://www.rgipt.ac.in/en/article/notifications",
+      "category": "notices",
+      "description": "Notifications and Announcements",
+      "use_selenium": true
+    }
+  ],
+  "direct_pdf_links": [
+    {
+      "url": "",
+      "category": "policies",
+      "description": "Add direct PDF links here"
+    }
+  ],
+  "categories": {
+    "policies": "policies",
+    "notices": "notices",
+    "handbooks": "handbooks",
+    "fees": "pdfs",
+    "academic": "pdfs"
+  },
+  "notes": [
+    "Add your specific PDF page URLs to 'target_urls'",
+    "Add direct PDF links to 'direct_pdf_links'",
+    "Set 'use_selenium: true' for pages with dynamic JavaScript content",
+    "Categories determine subfolder names in the output directory"
+  ]
+}
+

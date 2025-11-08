@@ -240,7 +240,7 @@ export default function Chatbot() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Examples area just above input */}
+      {/* EXAMPLES SECTION JUST ABOVE INPUT */}
       <div className="examples" style={{
         padding: "8px 28px 0 28px",
         display: "flex",

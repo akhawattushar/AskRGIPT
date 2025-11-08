@@ -177,8 +177,8 @@ export default function Chatbot() {
     <div className="chatbot">
       <div className="header">
         <div className="title-area">
-          <span className="app-logo">🎓</span> 
-          <h1>AskRGIPT</h1> 
+          <span className="app-logo">🎓</span>
+          <h1>AskRGIPT</h1>
           <p>Your AI Assistant for RGIPT</p>
         </div>
         <div>
@@ -240,8 +240,44 @@ export default function Chatbot() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* INPUT AREA + BUTTONS */}
-      <div className="input-area" style={{position:"relative"}}>
+      {/* Examples area just above input */}
+      <div className="examples" style={{
+        padding: "8px 28px 0 28px",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "10px",
+        alignItems: "center",
+        background: "transparent"
+      }}>
+        <span style={{
+          color: "#e0e7ff",
+          fontWeight: 600,
+          marginRight: "14px",
+          fontSize: "1.0rem"
+        }}>Examples:</span>
+        {examples.map((ex, i) => (
+          <button
+            key={i}
+            onClick={() => handleExampleClick(ex)}
+            style={{
+              background: "linear-gradient(90deg,#7c3aed 40%,#6366f1 90%)",
+              color: "white",
+              border: "none",
+              padding: "8px 18px",
+              borderRadius: "25px",
+              cursor: "pointer",
+              fontSize: "1rem",
+              fontWeight: 500,
+              boxShadow: "0 2px 8px #7c3aed44",
+              whiteSpace: "nowrap"
+            }}
+          >
+            {ex}
+          </button>
+        ))}
+      </div>
+
+      <div className="input-area" style={{ position: "relative" }}>
         <input
           type="text"
           value={input}
@@ -264,37 +300,10 @@ export default function Chatbot() {
             marginTop: 8,
           }}
         />
-        <div style={{
-          margin: "16px 0 0 0",
-          display: "flex",
-          flexWrap: "nowrap",
-          gap: "12px",
-          overflowX: "auto",
-          paddingBottom: 8,
-        }}>
-          {examples.map((ex, i) => (
-            <button
-              key={i}
-              onClick={() => handleExampleClick(ex)}
-              style={{
-                background: "linear-gradient(90deg,#7c3aed 40%,#6366f1 90%)",
-                color: "white",
-                border: "none",
-                padding: "8px 18px",
-                borderRadius: "25px",
-                cursor: "pointer",
-                fontSize: "1rem",
-                fontWeight: 500,
-                boxShadow: "0 2px 8px #7c3aed55",
-                whiteSpace: "nowrap"
-              }}
-            >
-              {ex}
-            </button>
-          ))}
-        </div>
-        <div style={{marginTop: "12px", display: "flex", gap: "12px"}}>
-          <button onClick={sendMessage} disabled={loading}
+        <div style={{ marginTop: "12px", display: "flex", gap: "12px" }}>
+          <button
+            onClick={sendMessage}
+            disabled={loading}
             style={{
               flex: 1,
               background: "linear-gradient(90deg,#2563eb 40%,#10b981 90%)",
@@ -304,11 +313,13 @@ export default function Chatbot() {
               padding: "12px 0",
               fontSize: "1.1rem",
               fontWeight: 600,
-              cursor: loading ? "not-allowed" : "pointer"
-            }}>
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
+          >
             Send
           </button>
-          <button onClick={clearChat}
+          <button
+            onClick={clearChat}
             style={{
               background: "linear-gradient(90deg,#ef4444 40%,#f9fafb 90%)",
               color: "white",
@@ -317,8 +328,9 @@ export default function Chatbot() {
               padding: "12px 20px",
               fontSize: "1.1rem",
               fontWeight: 600,
-              cursor: "pointer"
-            }}>
+              cursor: "pointer",
+            }}
+          >
             Clear Chat
           </button>
         </div>

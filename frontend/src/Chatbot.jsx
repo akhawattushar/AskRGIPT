@@ -277,6 +277,7 @@ export default function Chatbot() {
         ))}
       </div>
 
+      {/* Updated buttons below */}
       <div className="input-area" style={{ position: "relative" }}>
         <input
           type="text"
@@ -300,20 +301,21 @@ export default function Chatbot() {
             marginTop: 8,
           }}
         />
-        <div style={{ marginTop: "12px", display: "flex", gap: "12px" }}>
+        <div style={{ marginTop: "12px", display: "flex", gap: "16px" }}>
           <button
             onClick={sendMessage}
             disabled={loading}
             style={{
               flex: 1,
-              background: "linear-gradient(90deg,#2563eb 40%,#10b981 90%)",
-              color: "white",
+              background: "linear-gradient(90deg, #38bdf8 20%, #6366f1 100%)",
+              color: "#fff",
               border: "none",
-              borderRadius: "25px",
-              padding: "12px 0",
-              fontSize: "1.1rem",
-              fontWeight: 600,
+              borderRadius: "32px",
+              padding: "16px 0",
+              fontSize: "1.2rem",
+              fontWeight: 700,
               cursor: loading ? "not-allowed" : "pointer",
+              boxShadow: "0 2px 8px rgba(80,100,200,0.15)"
             }}
           >
             Send
@@ -321,14 +323,15 @@ export default function Chatbot() {
           <button
             onClick={clearChat}
             style={{
-              background: "linear-gradient(90deg,#ef4444 40%,#f9fafb 90%)",
-              color: "white",
+              background: "linear-gradient(90deg, #f87171 20%, #ef4444 100%)",
+              color: "#fff",
               border: "none",
-              borderRadius: "25px",
-              padding: "12px 20px",
-              fontSize: "1.1rem",
-              fontWeight: 600,
+              borderRadius: "32px",
+              padding: "16px 20px",
+              fontSize: "1.2rem",
+              fontWeight: 700,
               cursor: "pointer",
+              boxShadow: "0 2px 8px rgba(220,20,60,0.12)"
             }}
           >
             Clear Chat

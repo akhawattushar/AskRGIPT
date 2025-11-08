@@ -228,30 +228,6 @@ export default function Chatbot() {
         </div>
       )}
 
-      {/* EXAMPLES SECTION */}
-      <div className="examples" style={{ padding: "8px", borderTop: "1px solid #ddd" }}>
-        <strong>Examples:</strong>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "4px" }}>
-          {examples.map((ex, i) => (
-            <button
-              key={i}
-              style={{
-                backgroundColor: "#7c3aed",
-                color: "white",
-                border: "none",
-                padding: "6px 12px",
-                borderRadius: "4px",
-                cursor: "pointer",
-                fontSize: "0.9rem"
-              }}
-              onClick={() => handleExampleClick(ex)}
-            >
-              {ex}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className="messages" role="log" aria-live="polite">
         {messages.map(renderMessage)}
         {loading && (
@@ -264,7 +240,8 @@ export default function Chatbot() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="input-area">
+      {/* INPUT AREA + BUTTONS */}
+      <div className="input-area" style={{position:"relative"}}>
         <input
           type="text"
           value={input}
@@ -274,13 +251,77 @@ export default function Chatbot() {
           }}
           placeholder="Ask about admissions, exams, library rules..."
           aria-label="Message input"
+          style={{
+            borderRadius: "25px",
+            padding: "14px 20px",
+            border: "none",
+            width: "100%",
+            fontSize: "1.1rem",
+            boxShadow: "0 0 8px rgb(124 58 237 / 0.09)",
+            outline: "none",
+            background: "#312e81",
+            color: "#fff",
+            marginTop: 8,
+          }}
         />
-        <button onClick={sendMessage} disabled={loading}>
-          Send
-        </button>
-        <button onClick={clearChat} style={{ marginLeft: 8 }}>
-          Clear Chat
-        </button>
+        <div style={{
+          margin: "16px 0 0 0",
+          display: "flex",
+          flexWrap: "nowrap",
+          gap: "12px",
+          overflowX: "auto",
+          paddingBottom: 8,
+        }}>
+          {examples.map((ex, i) => (
+            <button
+              key={i}
+              onClick={() => handleExampleClick(ex)}
+              style={{
+                background: "linear-gradient(90deg,#7c3aed 40%,#6366f1 90%)",
+                color: "white",
+                border: "none",
+                padding: "8px 18px",
+                borderRadius: "25px",
+                cursor: "pointer",
+                fontSize: "1rem",
+                fontWeight: 500,
+                boxShadow: "0 2px 8px #7c3aed55",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {ex}
+            </button>
+          ))}
+        </div>
+        <div style={{marginTop: "12px", display: "flex", gap: "12px"}}>
+          <button onClick={sendMessage} disabled={loading}
+            style={{
+              flex: 1,
+              background: "linear-gradient(90deg,#2563eb 40%,#10b981 90%)",
+              color: "white",
+              border: "none",
+              borderRadius: "25px",
+              padding: "12px 0",
+              fontSize: "1.1rem",
+              fontWeight: 600,
+              cursor: loading ? "not-allowed" : "pointer"
+            }}>
+            Send
+          </button>
+          <button onClick={clearChat}
+            style={{
+              background: "linear-gradient(90deg,#ef4444 40%,#f9fafb 90%)",
+              color: "white",
+              border: "none",
+              borderRadius: "25px",
+              padding: "12px 20px",
+              fontSize: "1.1rem",
+              fontWeight: 600,
+              cursor: "pointer"
+            }}>
+            Clear Chat
+          </button>
+        </div>
       </div>
     </div>
   );
